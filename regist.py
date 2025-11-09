@@ -80,3 +80,11 @@ elif "success" in text.lower():
     print("✅ Nomor berhasil diregistrasi!")
 else:
     print("⚠️ Respon tidak diketahui:\n", text)
+
+    input("\nTekan Enter untuk kembali ke menu...")
+    main_menu()
+
+
+if __name__ == "__main__":
+    main_menu()
+    
