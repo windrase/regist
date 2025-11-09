@@ -1,4 +1,4 @@
-import requests, re, json
+import requests, re, json, os, time
 
 def headers(bear):
     return {
@@ -39,47 +39,75 @@ def bearer():
         token = "Ln9YN5trk3UUGHnHXoV8644+QEDWRf8qpLJ0tovzrhQVRjJKzRulyHxNIa8eos0pH7iNIePuPNOxNmY4sRnHZIPEPD7iKAX2Z8Z2qOucrAQ+h6Z98l7GQEoIrDwRTXAD7nLAyRnH9dVwzmidCPSH9dwWBE31I739FGTNKJdqB44Ieq3PIs1y1ay6eZgmNBY84QrE22qRYOzUFWX/68cCNwFoJJdf0BdZeKclWxJAasfLAHR1bnM5V8VkNiC+CZlWe08UiEGaltTDcp2hoLGsaYshcy48PIefK3WseHwQn1SvSERWWNbHO0F70RLz7V0CXOg222YN7LQdwhm2Nv1tiw=="
     return token
 
-token = bearer()
-number = input("Masukkan Nomor XL (628xx): ").strip()
-nik = input("Masukkan NIK: ").strip()
-kk = input("Masukkan No KK: ").strip()
+def clear():
+    os.system("cls" if os.name == "nt" else "clear")
 
-# Request OTP
-req_otp = requests.post(
-    'https://jupiter-ms-webprereg.xlaxiata.id/request-otp',
-    headers=headers(token),
-    json={"msisdn": number}
-)
+def main_menu():
+    clear()
+    print("="*45)
+    print("XL AUTO REGISTER")
+    print("Script BY Windrase")
+    print("="*45)
+    print("Menu")
+    print("1️⃣  Registrasi Nomor Baru")
+    print("2️⃣  Keluar Program")
+    print("="*45)
+    pilih = input("Pilih menu (1/2): ").strip()
+    if pilih == "1":
+        registrasi()
+    elif pilih == "2":
+        print("👋 Keluar program...")
+        time.sleep(1)
+        exit()
+    else:
+        print("❌ Pilihan tidak valid!")
+        time.sleep(1)
+        main_menu()
 
-if req_otp.status_code != 200:
-    print("❌ Gagal mengirim OTP. Coba lagi.")
-    exit()
+def registrasi():
+    clear()
+    print("📱 === REGISTRASI NOMOR XL ===")
+    token = bearer()
+    number = input("Masukkan Nomor XL (628xx): ").strip()
+    nik = input("Masukkan NIK: ").strip()
+    kk = input("Masukkan No KK: ").strip()
 
-print("✅ OTP berhasil dikirim ke nomor kamu.")
-otp = input("Masukkan OTP: ").strip()
+    print("\n📩 Mengirim OTP...")
+    req_otp = requests.post(
+        'https://jupiter-ms-webprereg.xlaxiata.id/request-otp',
+        headers=headers(token),
+        json={"msisdn": number}
+    )
 
-# Submit registrasi
-submit = requests.post(
-    'https://jupiter-ms-webprereg.xlaxiata.id/submit-registration-otp-non-biometric',
-    headers=headers(token),
-    json={"msisdn": number, "nik": nik, "kk": kk, "otpCode": otp}
-)
+    if req_otp.status_code != 200:
+        print("❌ Gagal mengirim OTP. Coba lagi.")
+        input("\nTekan Enter untuk kembali ke menu...")
+        return main_menu()
 
-try:
-    data = submit.json()
-    text = json.dumps(data, indent=2, ensure_ascii=False)
-except:
-    text = submit.text
+    print("✅ OTP berhasil dikirim ke nomor kamu.")
+    otp = input("Masukkan OTP: ").strip()
 
-# hasil
-if "telah terdaftar" in text.lower():
-    print("⚠️ Nomor telah terdaftar sebelumnya.")
-elif "tidak bisa digunakan" in text.lower() or "invalid" in text.lower():
-    print("❌ NIK tidak bisa digunakan (mungkin sudah penuh).")
-elif "success" in text.lower():
-    print("✅ Nomor berhasil diregistrasi!")
-else:
-    print("⚠️ Respon tidak diketahui:\n", text)
+    submit = requests.post(
+        'https://jupiter-ms-webprereg.xlaxiata.id/submit-registration-otp-non-biometric',
+        headers=headers(token),
+        json={"msisdn": number, "nik": nik, "kk": kk, "otpCode": otp}
+    )
+
+    try:
+        data = submit.json()
+        text = json.dumps(data, indent=2, ensure_ascii=False)
+    except:
+        text = submit.text
+
+    print("\n📜 HASIL:")
+    if "telah terdaftar" in text.lower():
+        print("⚠️ Nomor telah terdaftar sebelumnya.")
+    elif "tidak bisa digunakan" in text.lower() or "invalid" in text.lower():
+        print("❌ NIK tidak bisa digunakan (kemungkinan sudah penuh).")
+    elif "success" in text.lower():
+        print("✅ Nomor berhasil diregistrasi!")
+    else:
+        print("⚠️ Respon tidak diketahui:\n", text)
 
     input("\nTekan Enter untuk kembali ke menu...")
     main_menu()
@@ -87,4 +115,3 @@ else:
 
 if __name__ == "__main__":
     main_menu()
-    
