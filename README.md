@@ -8,7 +8,7 @@ Git clone terlebih dahulu github ke termux
 git clone https://github.com/windrase/regist
 cd regist
 ```
-# ⚠️Jalankan Script
+# ♻️Jalankan Script
 ```
 python regist.py
 ```
