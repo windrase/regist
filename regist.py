@@ -49,8 +49,8 @@ def main_menu():
     print("Script BY Windrase")
     print("="*45)
     print("Menu")
-    print("1️⃣  Registrasi Nomor Baru")
-    print("2️⃣  Keluar Program")
+    print("1 Registrasi Nomor Baru")
+    print("2 Keluar Program")
     print("="*45)
     pilih = input("Pilih menu (1/2): ").strip()
     if pilih == "1":
@@ -66,7 +66,7 @@ def main_menu():
 
 def registrasi():
     clear()
-    print("📱 === REGISTRASI NOMOR XL ===")
+    print("📱 REGISTRASI NOMOR XL")
     token = bearer()
     number = input("Masukkan Nomor XL (628xx): ").strip()
     nik = input("Masukkan NIK: ").strip()
